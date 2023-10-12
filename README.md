@@ -7,13 +7,9 @@ The core cropping functionality is powered by a deep learning model built using 
 Additional features include:
 
 1. An interface for users to upload one or more images via a web form. Images can be in common formats like JPG, PNG, etc.  
-
 2. Options to crop images to predefined sizes for profiles, passport photos, or custom dimensions specified by the user.
-
 3. Face detection algorithms to identify faces in the images. Even if a face is obscured by hats, masks, etc, it attempts to detect and crop.
-
 4. Smart cropping to ensure the face is centered and framed consistently across all images. Automatically handles rotated or off-center faces.
-
 5. Resizing of the cropped images to the target dimensions set by the user. Popular presets as well as custom sizes are supported.
 6. Downloading of ZIP archives containing all processed images for easy distribution.
 7. Logging of any errors or failures in processing to help diagnose issues.
@@ -21,9 +17,10 @@ Additional features include:
 The main technologies used are Python, Flask for the web framework, and OpenCV for efficient image processing and face detection. 
 
 Built With:
-1.Python, Flask - Backend framework
-2.OpenCV - Image processing
-3.SQLite - Database
+1. Python, Flask - Backend framework
+2. OpenCV - Image processing
+3. SQLite - Database
+
 
 Platform Screenshots:
 
