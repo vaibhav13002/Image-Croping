@@ -4,6 +4,7 @@ This is an image cropping application that allows users to crop images to predef
 The core cropping functionality is powered by a deep learning model built using PyTorch and trained on a dataset of portrait images. The model takes in an input image, detects the face and body of the main subject using object detection techniques, and suggests an optimal crop around the subject. This enables tight, professional-looking crops even with imperfect input images.
 
 Live link:- https://image-croping.onrender.com
+
 Additional features include:
 
 1. An interface for users to upload one or more images via a web form. Images can be in common formats like JPG, PNG, etc.  
