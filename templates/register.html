@@ -3,16 +3,114 @@
 <head>
     <title>Register</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            transition: background-color 0.5s ease; /* Smooth background color transition */
+        }
+
+        .container {
+            max-width: 400px;
+            padding: 30px 20px;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px 0px #79ace3;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #007bff;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #797c80;
+        }
+
+        #password-strength {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #register-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #register-button:disabled {
+            background-color: #adb5bd;
+            cursor: not-allowed;
+        }
+
+        #register-button.active {
+            background-color: #007bff;
+            box-shadow: 0px 0px 10px 0px rgba(0, 123, 255, 0.5);
+        }
+
+        #register-button:hover {
+            background-color: #0056b3;
+        }
+
+        .login-link {
+            text-align: center;
+        }
+
+        .login-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Password strength color codes */
+        #password-strength span {
+            color: #dc3545; /* Red by default */
+        }
+
+        #password-strength span.moderate {
+            color: #ffc107; /* Yellow */
+        }
+
+        #password-strength span.strong {
+            color: #28a745; /* Green */
+        }
+
+        #password-strength span.very-strong {
+            color: #4caf50; /* Dark Green */
+        }
+
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="mt-5">Register</h1>
+        <h1>Register</h1>
         <form method="POST" action="/register">
             <label for="email">Email:</label>
-            <input type="email" name="email" required><br>
+            <input type="email" name="email" required>
             
             <label for="password">Password:</label>
-            <input type="password" name="password" id="password" required><br>
+            <input type="password" name="password" id="password" required>
             
             <!-- Password strength checker -->
             <div id="password-strength"></div>
@@ -20,68 +118,84 @@
             <button type="submit" id="register-button" disabled>Register</button>
         </form>
         
-        <script>
-            const passwordInput = document.getElementById('password');
-            const registerButton = document.getElementById('register-button');
-            const passwordStrength = document.getElementById('password-strength');
-            
-            passwordInput.addEventListener('input', () => {
-                const password = passwordInput.value;
-                const strengthText = document.createElement('span');
-                
-                // Check password strength
-                let strength = 0;
-                if (password.match(/[a-z]/)) {
-                    strength += 1;
-                }
-                if (password.match(/[A-Z]/)) {
-                    strength += 1;
-                }
-                if (password.match(/[0-9]/)) {
-                    strength += 1;
-                }
-                if (password.length >= 8) {
-                    strength += 1;
-                }
-                
-                // Update the password strength feedback
-                switch (strength) {
-                    case 0:
-                        strengthText.textContent = 'Weak';
-                        strengthText.style.color = 'red';
-                        break;
-                    case 1:
-                        strengthText.textContent = 'Moderate';
-                        strengthText.style.color = 'orange';
-                        break;
-                    case 2:
-                    case 3:
-                        strengthText.textContent = 'Strong';
-                        strengthText.style.color = 'green';
-                        break;
-                    case 4:
-                        strengthText.textContent = 'Very Strong';
-                        strengthText.style.color = 'darkgreen';
-                        break;
-                    default:
-                        break;
-                }
-                
-                // Clear the previous strength text
-                passwordStrength.innerHTML = '';
-                
-                // Add the new strength text to the passwordStrength div
-                passwordStrength.appendChild(strengthText);
-                
-                // Enable the register button if the password is strong enough
-                if (strength >= 3) {
-                    registerButton.disabled = false;
-                } else {
-                    registerButton.disabled = true;
-                }
-            });
-        </script>
-         <p class="mt-3">Already have an account? <a href="{{ url_for('login') }}">Log in here</a></p>
+        <div class="login-link">
+            <p class="mt-3">Already have an account? <a href="{{ url_for('login') }}">Log in here</a></p>
+        </div>
     </div>
+    
+    <script>
+        const passwordInput = document.getElementById('password');
+        const registerButton = document.getElementById('register-button');
+        const passwordStrength = document.getElementById('password-strength');
+        
+        passwordInput.addEventListener('input', () => {
+            const password = passwordInput.value;
+            const strengthText = document.createElement('span');
+            let strength = 0;
+            
+            // Check password strength
+            if (password.length >= 8) {
+                strength += 1;
+            }
+            if (password.match(/[a-z]/)) {
+                strength += 1;
+            }
+            if (password.match(/[A-Z]/)) {
+                strength += 1;
+            }
+            if (password.match(/[0-9]/)) {
+                strength += 1;
+            }
+            if (password.match(/[$&+,:;=?@#|'<>.^*()%!-]/)) {
+                strength += 1;
+            }
+            
+            // Update the password strength feedback
+            switch (strength) {
+                case 0:
+                    strengthText.textContent = 'Very Weak';
+                    document.body.style.backgroundColor = '#ff7d7d'; // Smooth background color transition
+                    break;
+                case 1:
+                    strengthText.textContent = 'Weak';
+                    document.body.style.backgroundColor = '#ff7d7d'; // Smooth background color transition
+                    break;
+                case 2:
+                    strengthText.textContent = 'Moderate';
+                    strengthText.classList.add('moderate');
+                    document.body.style.backgroundColor = '#fffc9c'; // Smooth background color transition
+                    break;
+                case 3:
+                    strengthText.textContent = 'Strong';
+                    strengthText.classList.add('strong');
+                    document.body.style.backgroundColor = '#95f090'; // Smooth background color transition
+                    break;
+                case 4:
+                    strengthText.textContent = 'Very Strong';
+                   
+
+                    strengthText.classList.add('very-strong');
+                    document.body.style.backgroundColor = '#95f090'; // Dark Green background for very strong
+                    break;
+                default:
+                    break;
+            }
+            
+            // Clear the previous strength text
+            passwordStrength.innerHTML = '';
+            
+            // Add the new strength text to the passwordStrength div
+            passwordStrength.appendChild(strengthText);
+            
+            // Enable the register button if the password is strong enough
+            if (password.length >= 8) {
+                registerButton.classList.add('active');
+                registerButton.disabled = false;
+            } else {
+                registerButton.classList.remove('active');
+                registerButton.disabled = true;
+            }
+        });
+    </script>
 </body>
 </html>
