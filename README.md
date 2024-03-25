@@ -5,6 +5,8 @@ The core cropping functionality is powered by a deep learning model built using 
 
 Live link:- https://image-croping.onrender.com
 
+For Updated ui see Branch UI2
+
 Additional features include:
 
 1. An interface for users to upload one or more images via a web form. Images can be in common formats like JPG, PNG, etc.  
