@@ -1,5 +1,7 @@
 {
-    "rewrites": [
-        {"source": "/(.*)", "destination": "/"}
-    ]
+  "functions": {
+    "api": {
+      "runtime": "python3.8"
+    }
+  }
 }
