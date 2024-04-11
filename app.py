@@ -13,34 +13,39 @@ input_image_names = []
 processed_images = []
 errors = []      
 
-app = Flask(__name__,static_folder="static", static_url_path="/static")
+app = Flask(__name__,static_folder="static", static_url_path="/static") # to access the static folder jisme hamare templates rakhe h
 app.secret_key = 'your_secret_key'
 
 # SQLite database connection
 def get_db_connection():
-    conn = sqlite3.connect('database.db')
-    conn.row_factory = sqlite3.Row
+    conn = sqlite3.connect('database.db') # initializes connection with database if .db file is not presentt the sqlite3 will create it and connect it with object
+    conn.row_factory = sqlite3.Row # returning the rows as a dictionaries where column names are mapped to values
     return conn
 
 # Routes
-@app.route('/')
+@app.route('/')  # the function in this will be executed when this specific url is called ,,,now this is root url in which in the function it is told to load index page 
 def home():
     return render_template('index.html')
 
-@app.route('/register', methods=['GET', 'POST'])
+
+# Route ko bol sktey h it register URL path to register() function
+@app.route('/register', methods=['GET', 'POST'])  # it specifies that this route can handle both  GET and POST requests
 def register():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
+    if request.method == 'POST': # agr current request post h tho iska mtlb user ne form submitt krdiya with registeration data
+        email = request.form['email']  # form ke a fields me se data extract krna
+        password = request.form['password'] #request.form attribute is a dictionary like object containing the form data submitted with the requests
+
+# ab database se connection establish karega and it will create cursor object to execute sql query, insert user's email and password into the 'users' table in database, 
+# commit the transaction to save the changes, and the close the database connection
         conn = get_db_connection()
-        cursor = conn.cursor()
+        cursor = conn.cursor() # created cursor object because it provides isolation , resource management, transaction control, error handling.
         cursor.execute("INSERT INTO users (username, password) VALUES (?, ?)", (email, password))
         conn.commit()
         conn.close()
         
-        return redirect(url_for('login'))
+        return redirect(url_for('login')) # now it redirects the user to the login page which also means that user had successfully registered
     
-    return render_template('register.html')
+    return render_template('register.html') # a else condition (GET) h iska mtlb user accessing the register form for registration so a register page pr redirect krdega
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -52,29 +57,31 @@ def login():
         conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM users WHERE username = ? AND password = ?", (email, password))
-        user = cursor.fetchone()
+        user = cursor.fetchone() # using sql query to check whether user is present in our database or not, the query uses parameterized sql to avoid sql injection vulnerabilities.
+        # after executing the query we fetch the row.
         conn.close()
-        
+
+# agar user hamarey database me h tho hum user ka id session me store krdengey , storing the user id in the session allows user to keep logged in for multiple requests. , after this we redirect the user to upload files
         if user:
             session['user_id'] = user['id']
             return redirect(url_for('upload_files'))
         else:
             return render_template('login.html', error='Invalid username or password')
-    
+# agr user nhi h database me tho firse login page pr render krna h with an error
     return render_template('login.html')
 
 @app.route('/processimage', methods=['GET', 'POST'])
 def upload_files():
     result = [] 
     uploads= []
-    if 'user_id' in session:
+    if 'user_id' in session: # check user is present in the session indicating tha the user is logged in. if not reirect to login page
         conn = get_db_connection()
-        cursor = conn.cursor()
+        cursor = conn.cursor()  # fetching the user info from the database
         cursor.execute("SELECT * FROM users WHERE id = ?", (session['user_id'],))
         user = cursor.fetchone()
         conn.close()
 
-        if request.method == 'POST':
+        if request.method == 'POST': # iska mtlb user ne file upload kiya h
             uploaded_files = request.files.getlist('file')
             selected_size = request.form['size']
             standard_size = request.form.get('standard_size')
@@ -163,8 +170,9 @@ def upload_files():
             })
         
 
-        return render_template('usp.html', user=user,result=result, errors=errors, original_images=uploads)
+        return render_template('usp.html', user=user,result=result, errors=errors, original_images=uploads) # render template to display output 
     return redirect(url_for('login'))
+
 @app.route('/download_all')
 def download_all_images():
         if not processed_images:
@@ -205,7 +213,12 @@ def download_errors():
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)
-    return redirect(url_for('home'))
+    return redirect(url_for('home')) # after removing user id from session the function redirects to the homepage
 
 if __name__ == '__main__':
     app.run(debug=False,host='0.0.0.0')
+
+
+
+# render_template is a function provided by the flask framework that allows you to render html templates
+# is ke liye apneko sarey html files template naam ke folder me rkhna h
